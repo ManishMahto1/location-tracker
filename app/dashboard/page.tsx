@@ -19,8 +19,8 @@ export default function Dashboard() {
         console.log('Locations received:', response.data);
         setLocations(response.data);
         setError(null);
-      } catch (error: any) {
-        console.error('Error fetching locations:', error);
+      } catch  {
+        console.error('Error fetching locations:');
         setError('Failed to load locations. Please try again later.');
       }
     };

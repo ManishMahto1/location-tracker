@@ -5,7 +5,12 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { Location } from '../types';
 
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+interface IconDefault extends L.Icon.Default {
+  _getIconUrl?: () => string; // Define the method Leaflet internally uses
+}
+
+delete (L.Icon.Default.prototype as IconDefault)._getIconUrl;
+
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',

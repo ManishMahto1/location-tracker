@@ -56,9 +56,9 @@ export default function Track() {
             console.log('API response:', response.data);
             alert('Location saved successfully!');
             router.push('/dashboard');
-          } catch (error: any) {
+          } catch  {
             console.error('Save error:', error);
-            setError(`Failed to save location: ${error.message}`);
+            setError(`Failed to save location`);
           }
         },
         (error: GeolocationPositionError) => {
