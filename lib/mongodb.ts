@@ -1,8 +1,10 @@
 import { MongoClient, Db, MongoClientOptions } from 'mongodb';
 
-// Extend the Node.js global object to include _mongoClientPromise
+// Extend the global object type
 declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
+  interface GlobalThis {
+    _mongoClientPromise?: Promise<MongoClient>;
+  }
 }
 
 const uri: string = process.env.MONGODB_URI || '';
@@ -17,11 +19,11 @@ let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
   // In development, use global to avoid multiple connections
-  if (!global._mongoClientPromise) {
+  if (!globalThis._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    global._mongoClientPromise = client.connect();
+    globalThis._mongoClientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise;
+  clientPromise = globalThis._mongoClientPromise;
 } else {
   // In production, create a new connection
   client = new MongoClient(uri, options);
