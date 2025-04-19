@@ -1,14 +1,13 @@
-import { MongoClient, Db, MongoClientOptions } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
-// Extend the global object type
+// Declare global variable with let instead of var
 declare global {
-  interface GlobalThis {
-    _mongoClientPromise?: Promise<MongoClient>;
-  }
+  // eslint-disable-next-line no-var
+  var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-const uri: string = process.env.MONGODB_URI || '';
-const options: MongoClientOptions = {};
+const uri = process.env.MONGODB_URI || '';
+const options = {};
 
 if (!uri) {
   throw new Error('Please add MONGODB_URI to .env');
@@ -18,14 +17,12 @@ let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
 if (process.env.NODE_ENV === 'development') {
-  // In development, use global to avoid multiple connections
-  if (!globalThis._mongoClientPromise) {
+  if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
-    globalThis._mongoClientPromise = client.connect();
+    global._mongoClientPromise = client.connect();
   }
-  clientPromise = globalThis._mongoClientPromise;
+  clientPromise = global._mongoClientPromise!;
 } else {
-  // In production, create a new connection
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
